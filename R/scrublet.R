@@ -59,19 +59,19 @@ run_scrublet_seurat <- function(
     unique_groups <- unique(groups)
 
     all_scores <- numeric(ncol(seurat_obj))
-    all_preds  <- logical(ncol(seurat_obj))
+    all_preds  <- character(ncol(seurat_obj))
 
     for (g in unique_groups) {
       message("Running scrublet for group: ", g)
 
-      # cell_ids <- names(groups)[groups == g]
+      # cell_ids <- colnames(seurat_obj)[groups == g]
       sub_mat <- counts_matrix[, groups == g, drop = FALSE]
       print(dim(sub_mat))
 
       res <- run_scrub(as.matrix(sub_mat))
 
-      all_scores[cell_ids] <- res$score
-      all_preds[cell_ids]  <- res$pred
+      all_scores[groups == g] <- res$score
+      all_preds[groups == g]  <- res$pred
     }
 
   } else {
