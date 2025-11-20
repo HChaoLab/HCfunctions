@@ -64,8 +64,8 @@ run_scrublet_seurat <- function(
     for (g in unique_groups) {
       message("Running scrublet for group: ", g)
 
-      cell_ids <- names(groups)[groups == g]
-      sub_mat <- counts_matrix[, cell_ids, drop = FALSE]
+      # cell_ids <- names(groups)[groups == g]
+      sub_mat <- counts_matrix[, groups == g, drop = FALSE]
 
       res <- run_scrub(sub_mat)
 
