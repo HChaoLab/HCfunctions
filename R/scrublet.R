@@ -66,6 +66,7 @@ run_scrublet_seurat <- function(
 
       # cell_ids <- names(groups)[groups == g]
       sub_mat <- counts_matrix[, groups == g, drop = FALSE]
+      print(dim(sub_mat))
 
       res <- run_scrub(sub_mat)
 
