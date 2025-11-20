@@ -42,7 +42,7 @@ run_scrublet_seurat <- function(
 
     list(
       score = as.numeric(res[[1]]),
-      pred  = as.logical(res[[2]])
+      pred  = res[[2]]
     )
   }
 
@@ -68,7 +68,7 @@ run_scrublet_seurat <- function(
       sub_mat <- counts_matrix[, groups == g, drop = FALSE]
       print(dim(sub_mat))
 
-      res <- run_scrub(sub_mat)
+      res <- run_scrub(as.matrix(sub_mat))
 
       all_scores[cell_ids] <- res$score
       all_preds[cell_ids]  <- res$pred
