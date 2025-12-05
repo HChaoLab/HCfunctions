@@ -51,3 +51,33 @@ ggplot_add.reorder_x_autofill <- function(object, plot, object_name) {
   ggplot2::ggplot_add(new_scale, plot, object_name)
 }
 
+
+#' AddMeanCrossBar
+#'
+#' @param fun mean
+#' @param width 0.5
+#' @param position identity
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+AddMeanCrossBar <- function(fun = mean, width = 0.5, position = "identity", ...) {
+  # 修正点：显式指定参数名 position = position
+  # 修正点：fun.y 改为 fun (ggplot2 新版建议)
+  stat_summary(fun.y =  fun, geom = 'crossbar', width = width, position = position, ...)
+}
+
+#' Legend_point_size
+#' change legend point size
+#' @param size
+#' @param shape
+#'
+#' @return
+#' @export
+#'
+#' @examples
+Legend_point_size <- function(size = 3,shape = NULL){
+  guides(color = guide_legend(override.aes = list(size = size, shape = shape)))
+}
