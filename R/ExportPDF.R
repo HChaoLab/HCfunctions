@@ -74,8 +74,8 @@ ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,widt
     params <- setNames(sapply(params, `[`, 2),
                        sapply(params, `[`, 1))
 
-    Heigh_screen  <- as.integer(params["width"])
-    width_screen <- as.integer(params["height"])
+    width_screen  <- as.integer(params["width"])
+    Heigh_screen <- as.integer(params["height"])
   }
 
   Heigh_screen = Heigh_screen * dpi/92
