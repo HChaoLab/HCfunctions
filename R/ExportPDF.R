@@ -55,27 +55,29 @@ extract_plot_data <- function(p) {
 #' @param row_names
 #' @param format_headers
 #' @param use_zip64
+#' @param url
 #'
 #' @return
 #' @export
 #'
 #' @examples
-ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", width_screen = 500, Heigh_screen = 500, pig_device='tiff',
+ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,width_screen = 500, Heigh_screen = 500, pig_device='tiff',
                                             units = c("in", "cm", "mm"), dpi = 92, col_names = TRUE, row_names = FALSE,
                                             format_headers = TRUE, use_zip64 = FALSE)
 {
   library(shiny)
   library(ggplot2)
-  # if('patchwork'%in%class(p)){
-  #   data <- list()
-  #   for(i in 1:length(p)){
-  #     data[[i]] <- p[[i]]$data
-  #   }
-  #   names(data) <- paste('plot',1:length(p),sep='_')
-  #
-  # }else{
-  #   data <- p$data
-  # }
+  if(!is.null(url)){
+    query <- sub(".*\\?", "", url)
+    params <- strsplit(query, "&")[[1]]
+    params <- strsplit(params, "=")
+    params <- setNames(sapply(params, `[`, 2),
+                       sapply(params, `[`, 1))
+
+    Heigh_screen  <- as.integer(params["width"])
+    width_screen <- as.integer(params["height"])
+  }
+
   Heigh_screen = Heigh_screen * dpi/92
   width_screen = width_screen * dpi/92
   data <- extract_plot_data(p)
