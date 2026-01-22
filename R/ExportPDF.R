@@ -1,13 +1,19 @@
-# 提取单个 ggplot 对象的数据（主 data + layers）
+#' Extract Data from ggplot Object
+#'
+#' Internal function to extract data from a single ggplot object, including both main data and layer data.
+#'
+#' @param plot A ggplot object from which to extract data
+#' @return A list containing the main data and data from each layer of the plot
+#' @keywords internal
 .extract_from_ggplot <- function(plot) {
   res <- list()
 
-  # 主数据
+  # Main data
   if (!is.null(nrow(plot$data))) {
     res[["main"]] <- plot$data
   }
 
-  # layers 数据
+  # Layer data
   layer_data <- lapply(seq_along(plot$layers), function(i) {
     lyr <- plot$layers[[i]]
     if (!is.null(nrow(lyr$data))) {
@@ -22,13 +28,19 @@
   return(res)
 }
 
-# 适配 ggplot 和 patchwork
+#' Extract Plot Data from ggplot or Patchwork Objects
+#'
+#' This function extracts data from either a single ggplot object or a patchwork object containing multiple plots.
+#'
+#' @param p A ggplot object or a patchwork object containing multiple plots
+#' @return A list containing extracted data from the plot(s)
+#' @export
 extract_plot_data <- function(p) {
   if (inherits(p, "ggplot")&!inherits(p, "patchwork")) {
     return(.extract_from_ggplot(p))
   }
   if (inherits(p, "patchwork")) {
-    # 获取 patchwork 中的所有 ggplot
+    # Get all ggplots in the patchwork
     # plots <- patchwork:::plots(plot)
     res <- NULL
     for(i in seq_along(p)){

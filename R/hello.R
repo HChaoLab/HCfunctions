@@ -1,18 +1,14 @@
-# Hello, world!
-#
-# This is an example function named 'hello' 
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   https://r-pkgs.org
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
-
+#' Hello, World! Function
+#'
+#' This function prints the classic 'Hello, world!' message to the console.
+#' It serves as a simple example of a basic R function within an R package.
+#'
+#' @return No return value, called for side effects (printing to console)
+#'
+#' @examples
+#' hello()
+#'
+#' @export
 hello <- function() {
   print("Hello, world!")
 }

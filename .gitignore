@@ -1,1 +1,53 @@
-Nothing needs to be added to .gitignore since only a README.md file was modified and no build artifacts, dependencies, or temporary files were detected in the changes.
+```
+# R-specific build artifacts
+*.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata/
+
+# Dependencies
+renv/library/
+renv/staging/
+packrat/lib/
+packrat/src/
+
+# General build artifacts
+build/
+dist/
+*.so
+*.dll
+*.dylib
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+```

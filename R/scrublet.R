@@ -16,7 +16,7 @@ run_scrublet_seurat <- function(
     env_name = "r-reticulate"
 ) {
   # ------------------------------ #
-  #   基础检查
+  #   Basic checks
   # ------------------------------ #
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     stop("Package 'reticulate' is required but not installed.")
@@ -27,14 +27,14 @@ run_scrublet_seurat <- function(
     stop(paste0("split.by variable '", split.by, "' not found in meta.data"))
   }
 
-  # 使用指定 conda 环境
+  # Use specified conda environment
   use_condaenv(env_name, required = TRUE)
 
-  # 导入 Scrublet
+  # Import Scrublet
   scr <- import("scrublet")
 
   # ------------------------------ #
-  #   内部功能：运行 Scrublet
+  #   Internal function: Run Scrublet
   # ------------------------------ #
   run_scrub <- function(mat) {
     scrub <- scr$Scrublet(t(mat))
@@ -47,12 +47,12 @@ run_scrublet_seurat <- function(
   }
 
   # ------------------------------ #
-  #   提取计数矩阵
+  #   Extract count matrix
   # ------------------------------ #
   counts_matrix <- GetAssayData(seurat_obj, assay = assay, slot = "counts")
 
   # ------------------------------ #
-  #   有分组：分组运行
+  #   With groups: Run by group
   # ------------------------------ #
   if (!is.null(split.by)) {
     groups <- seurat_obj@meta.data[[split.by]]
@@ -76,7 +76,7 @@ run_scrublet_seurat <- function(
 
   } else {
     # ------------------------------ #
-    #   无分组：整体运行
+    #   Without groups: Run overall
     # ------------------------------ #
     res <- run_scrub(counts_matrix)
     all_scores <- res$score
@@ -84,7 +84,7 @@ run_scrublet_seurat <- function(
   }
 
   # ------------------------------ #
-  #   写入 meta.data
+  #   Write to meta.data
   # ------------------------------ #
   seurat_obj$doublet_score  <- all_scores
   seurat_obj$is_doublet     <- all_preds
@@ -101,25 +101,25 @@ run_scrublet_seurat <- function(
 #'
 #' @examples
 run_scrublet <- function(counts_matrix, env_name = "r-reticulate") {
-  # 确保 reticulate 可用
+  # Ensure reticulate is available
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     stop("Package 'reticulate' is required but not installed.")
   }
   library(reticulate)
 
-  # 1. 指定要使用的 Python 环境（这里是 scDNS）
+  # 1. Specify the Python environment to use
   use_condaenv(env_name, required = TRUE)
 
-  # 2. 导入 Scrublet 模块
+  # 2. Import Scrublet module
   scr <- import("scrublet")
 
-  # 3. 初始化 Scrublet 对象
+  # 3. Initialize Scrublet object
   scrub <- scr$Scrublet(t(counts_matrix))
 
-  # 4. 运行检测
+  # 4. Run detection
   res <- scrub$scrub_doublets()
 
-  # 5. 提取结果
+  # 5. Extract results
   doublet_scores <- as.numeric(res[[1]])
   predicted_doublets <- as.logical(res[[2]])
 
