@@ -62,7 +62,7 @@ extract_plot_data <- function(p) {
 #'
 #' @examples
 ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,width_screen = 500, Heigh_screen = 500, pig_device='tiff',
-                                            units = c("in", "cm", "mm"), dpi = 92, col_names = TRUE, row_names = FALSE,
+                                            units = c("in", "cm", "mm"), dpi = 92, col_names = TRUE, row_names = TRUE,
                                             format_headers = TRUE, use_zip64 = FALSE)
 {
   library(shiny)
@@ -107,8 +107,15 @@ ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,widt
                                output$excel = downloadHandler(filename = paste(filename,
                                                                                ".xlsx", sep = ""), content = function(file) {
                                                                                  if (row_names & (!is.null(rownames(data)))) {
-                                                                                   data = tibble::add_column(data, RowNames = rownames(data),
+                                                                                   if(is.list(data)){
+                                                                                     data = lapply(data,function(x){tibble::add_column(x, RowNames = rownames(x),
+                                                                                                             .before = 1)})
+                                                                                   }else{
+                                                                                     data = tibble::add_column(data, RowNames = rownames(data),
                                                                                                              .before = 1)
+                                                                                   }
+                                                                                     
+                                                                                   
                                                                                    writexl::write_xlsx(data, path = file, col_names = col_names,
                                                                                                        format_headers = format_headers, use_zip64 = use_zip64)
                                                                                  } else {
