@@ -106,7 +106,7 @@ ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,widt
                                                                              })
                                output$excel = downloadHandler(filename = paste(filename,
                                                                                ".xlsx", sep = ""), content = function(file) {
-                                                                                 if (row_names & (!is.null(rownames(data)))) {
+                                                                                 if ((row_names & (!is.null(rownames(data))))|(row_names & (is.list(data)))) {
                                                                                    if(is.list(data)){
                                                                                      data = lapply(data,function(x){tibble::add_column(x, RowNames = rownames(x),
                                                                                                              .before = 1)})
