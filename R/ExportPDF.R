@@ -211,7 +211,7 @@ ExportPDF_TiffSvgTolocal_withData  <-  function (p,
                 width = width,
                 height = height,
                 units = units[1],
-                useDingbats = FALSE
+                # useDingbats = FALSE
               )
               
             }
