@@ -124,3 +124,196 @@ ExportPDF_TiffTolocal_withData <- function (p, filename = "Expot", url=NULL,widt
                                                                                  }})
                              }))
 }
+#' ExportPDF_TiffSvgTolocal_withData
+#'
+#' @param p 
+#' @param filename 
+#' @param url 
+#' @param width_screen 
+#' @param Heigh_screen 
+#' @param pig_device 
+#' @param units 
+#' @param dpi 
+#' @param col_names 
+#' @param row_names 
+#' @param format_headers 
+#' @param use_zip64 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ExportPDF_TiffSvgTolocal_withData  <-  function (p,
+            filename = "Expot",
+            url = NULL,
+            width_screen = 500,
+            Heigh_screen = 500,
+            pig_device = "tiff",
+            units = c("in", "cm", "mm"),
+            dpi = 92,
+            col_names = TRUE,
+            row_names = FALSE,
+            format_headers = TRUE,
+            use_zip64 = FALSE) {
+    
+    library(shiny)
+    library(ggplot2)
+    
+    if (!is.null(url)) {
+      query <- sub(".*\\?", "", url)
+      params <- strsplit(query, "&")[[1]]
+      params <- strsplit(params, "=")
+      params <- setNames(
+        sapply(params, `[`, 2),
+        sapply(params, `[`, 1)
+      )
+      
+      width_screen <- as.integer(params["width"])
+      Heigh_screen <- as.integer(params["height"])
+    }
+    
+    Heigh_screen <- Heigh_screen * dpi / 92
+    width_screen <- width_screen * dpi / 92
+    
+    data <- HCfunctions::extract_plot_data(p)
+    
+    runApp(
+      list(
+        
+        ui = fluidPage(
+          
+          downloadButton("foo", label = "PDF Download"),
+          downloadButton("svg", label = "SVG Download"),
+          downloadButton("tiff", label = "TIFF Download"),
+          downloadButton("png", label = "PNG Download"),
+          downloadButton("excel", label = "Data Download")
+          
+        ),
+        
+        server = function(input, output) {
+          
+          suppressMessages(extrafont::loadfonts())
+          
+          width <- width_screen / dpi
+          height <- Heigh_screen / dpi
+          
+          ## PDF
+          output$foo <- downloadHandler(
+            
+            filename = paste0(filename, ".pdf"),
+            
+            content = function(file) {
+              
+              ggsave(
+                filename = file,
+                plot = p,
+                device = cairo_pdf,
+                width = width,
+                height = height,
+                units = units[1],
+                useDingbats = FALSE
+              )
+              
+            }
+            
+          )
+          
+          ## SVG
+          output$svg <- downloadHandler(
+            
+            filename = paste0(filename, ".svg"),
+            
+            content = function(file) {
+              
+              svglite::svglite(
+                file = file,
+                width = width,
+                height = height
+              )
+              
+              print(p)
+              
+              dev.off()
+              
+            }
+            
+          )
+          
+          ## TIFF
+          output$tiff <- downloadHandler(
+            
+            filename = paste0(filename, ".tiff"),
+            
+            content = function(file) {
+              
+              ggsave(
+                filename = file,
+                plot = p,
+                device = "tiff",
+                width = width,
+                height = height,
+                units = units[1],
+                dpi = dpi
+              )
+              
+            }
+            
+          )
+          
+          ## PNG
+          output$png <- downloadHandler(
+            
+            filename = paste0(filename, ".png"),
+            
+            content = function(file) {
+              
+              ggsave(
+                filename = file,
+                plot = p,
+                device = "png",
+                width = width,
+                height = height,
+                units = units[1],
+                dpi = dpi
+              )
+              
+            }
+            
+          )
+          
+          ## Excel
+          output$excel <- downloadHandler(
+            
+            filename = paste0(filename, ".xlsx"),
+            
+            content = function(file) {
+              
+              if (row_names && !is.null(rownames(data))) {
+                
+                data <- tibble::add_column(
+                  data,
+                  RowNames = rownames(data),
+                  .before = 1
+                )
+                
+              }
+              
+              writexl::write_xlsx(
+                data,
+                path = file,
+                col_names = col_names,
+                format_headers = format_headers,
+                use_zip64 = use_zip64
+              )
+              
+            }
+            
+          )
+          
+        }
+        
+      )
+      
+    )
+    
+}
